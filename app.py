@@ -32,37 +32,7 @@ def home():
     except jwt.exceptions.DecodeError:
         msg = 'There was a problem logging you in'
         return redirect(url_for('login', msg=msg))
-
-@app.route('/login', methods=['GET'])
-def login():
-    msg = request.args.get('msg')
-    return render_template('login.html', msg=msg)
-
-@app.route('/shop', methods=['GET'])
-def shop():
-    msg = request.args.get('msg')
-    return render_template('shop.html', msg=msg)
-
-@app.route('/detail', methods=['GET'])
-def detail():
-    msg = request.args.get('msg')
-    return render_template('detail.html', msg=msg)
-
-@app.route('/contact', methods=['GET'])
-def contact():
-    msg = request.args.get('msg')
-    return render_template('contact.html', msg=msg)
-
-@app.route('/cart', methods=['GET'])
-def cart():
-    msg = request.args.get('msg')
-    return render_template('cart.html', msg=msg)
-
-@app.route('/checkout', methods=['GET'])
-def chekcout():
-    msg = request.args.get('msg')
-    return render_template('checkout.html', msg=msg)
-
+    
 @app.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
     username_receive = request.form['username_give']
@@ -111,7 +81,39 @@ def sign_up():
          "password": password_hash,                                  # password
      }
     db.users.insert_one(doc)
-    return jsonify({'result': 'success'})    
+    return jsonify({'result': 'success'})   
+
+@app.route('/login', methods=['GET'])
+def login():
+    msg = request.args.get('msg')
+    return render_template('login.html', msg=msg)
+
+@app.route('/shop', methods=['GET'])
+def shop():
+    msg = request.args.get('msg')
+    return render_template('shop.html', msg=msg)
+
+@app.route('/detail', methods=['GET'])
+def detail():
+    msg = request.args.get('msg')
+    return render_template('detail.html', msg=msg)
+
+@app.route('/contact', methods=['GET'])
+def contact():
+    msg = request.args.get('msg')
+    return render_template('contact.html', msg=msg)
+
+@app.route('/cart', methods=['GET'])
+def cart():
+    msg = request.args.get('msg')
+    return render_template('cart.html', msg=msg)
+
+@app.route('/checkout', methods=['GET'])
+def chekcout():
+    msg = request.args.get('msg')
+    return render_template('checkout.html', msg=msg)
+
+ 
 
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)
