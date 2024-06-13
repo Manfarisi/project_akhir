@@ -264,6 +264,56 @@ a:focus {
           flex-direction: column;
 }
 
+.about-box-main{
+  padding: 70px 0px;
+}
+
+.about-box-main p{
+  padding-bottom: 20px;
+}
+
+.service-block-inner {
+  padding: 15px 20px;
+  position: relative;
+  margin-bottom: 30px;
+}
+.service-block-inner::before {
+  content: "";
+  width: 5px;
+  height: 100%;
+  border-radius: 0px;
+  background: #010101;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.5s ease 0s;
+}
+.service-block-inner::after {
+  content: "";
+  width: 5px;
+  height: 0;
+  border-radius: 0px;
+  background: #d33b33;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.5s ease 0s;
+}
+.service-block-inner h3 {
+  font-size: 24px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.service-block-inner p {
+  margin: 0px;
+  font-size: 16px;
+  font-weight: 300;
+  padding-bottom: 0px;
+}
+.service-block-inner:hover::after {
+  height: 100%;
+}
+
 .heading_container h2 {
   text-transform: uppercase;
   font-weight: bold;
