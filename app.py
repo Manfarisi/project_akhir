@@ -165,6 +165,11 @@ def checkout():
     msg = request.args.get('msg')
     return render_template('checkout.html', msg=msg)
 
+@app.route('/status', methods=['GET'])
+def status():
+    msg = request.args.get('msg')
+    return render_template('status.html', msg=msg)
+
 # baru
 @app.route('/admin_login', methods=['POST'])
 def sign_in_admin():
