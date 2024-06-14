@@ -1,0 +1,38 @@
+{% include 'header.html' %}
+
+    <main id="main" class="main">
+
+<br>
+        <div class="card border-0 shadow mb-4 ">
+            <div class="card-body mt-4">
+                <div class="table-responsive">
+                    <form action="/addBaju" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Name Produk</label>
+                            <input type="text" class="form-control" name="nama" style="border-radius: 13px;"
+                                placeholder="Enter the Product Name" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Price</label>
+                            <input type="number" class="form-control" name="harga" style="border-radius: 13px;"
+                                placeholder="Enter the Price" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Image</label>
+                            <input type="file" class="form-control" accept=".png,.jpg,.jpeg" name="gambar" style="border-radius: 13px;"
+                                placeholder="Enter the Image" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Description Product</label>
+                            <textarea class="form-control" name="deskripsi" style="border-radius: 13px;"
+                                placeholder="Enter the Description of Product" required /></textarea>
+                        </div>
+                        <div class="mb-3 ">
+                            <button type="submit" class="btn btn-danger" style="margin-left: 90%;">Submit</button>
+                        </div>
+                        
+                        
+                    </form>
+    </main><!-- End #main -->
+
+    {% include 'footer.html' %}

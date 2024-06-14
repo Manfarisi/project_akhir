@@ -19,16 +19,30 @@
     <div class="container-fluid">
         <div class="row px-xl-5 justify-content-center">
             <!-- Shop Sidebar End -->
-
+           
             <!-- Shop Product Start -->
             <div class="col-lg-9 col-md-8">
                 <div class="row pb-3 justify-content-center">
                     <div class="col-12 pb-1">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <div>
-                                <button class="btn btn-sm btn-light"><i class="fa fa-th-large"></i></button>
-                                <button class="btn btn-sm btn-light ml-2"><i class="fa fa-bars"></i></button>
-                            </div>
+                            <div class="row justify-content-end m-2">
+                                <a href="/addBaju" style="width: 150px">
+                                  <div
+                                    style="display: flex; background-color: #B52424; width:150px; border-radius:8px; height:40px; align-items: center;">
+                                    <div style="color: white; margin-left: 10px;">
+                                      <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                        </path>
+                                      </svg>
+                                    </div>
+                                    <div style="color: white;">
+                                      + Product
+                                    </div>
+                                  </div>
+                                </a>
+                              </div>
+
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-12">
@@ -231,6 +245,22 @@
                             </div>
                         </div>
                     </div>
+
+                    {% for item in Baju %}
+                    <div class="col">
+                        <div class="card">
+                            <img src="../static/assets/imgBaju/{{item.gambar}}" class="card-img-top" alt="{{item.nama}}" />
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title">{{item.nama}}</h5>
+                                    <h5 class="card-title" style="color: brown;">{{item.harga}}</h5>
+                                </div>
+                                <p class="card-text">{{item.deskripsi}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
                     <div class="col-12">
                         <nav>
                           <ul class="pagination justify-content-center">
