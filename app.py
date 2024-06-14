@@ -142,7 +142,6 @@ def login():
 
 @app.route('/shop', methods=['GET'])
 def shop():
-    baju = list(db.users.find({}))
     return render_template('shop.html', baju=baju)
 
 @app.route('/detail', methods=['GET'])
@@ -170,32 +169,6 @@ def status():
     msg = request.args.get('msg')
     return render_template('status.html', msg=msg)
 
-@app.route('/addBaju',methods=['GET','POST'])
-def addBaju():
-    if request.method == 'POST':
-        nama = request.form['nama']
-        harga = request.form['harga']
-        deskripsi = request.form['deskripsi']
-        nama_gambar = request.files['gambar']
-
-        if nama_gambar:
-            nama_file_asli = nama_gambar.filename
-            nama_file_gambar = nama_file_asli.split('/')[-1]
-            file_path = f'static/assets/imgBaju/{nama_file_gambar}'
-            nama_gambar.save(file_path)
-        else:
-            nama_gambar = None
-
-        doc = {
-            'nama' : nama,
-            'harga' : harga,
-            'gambar' : nama_file_gambar,
-            'deskripsi' : deskripsi
-        }
-
-        db.users.insert_one(doc)
-        return redirect(url_for('shop'))
-    return render_template('addBaju.html')
 
 
 # baru
