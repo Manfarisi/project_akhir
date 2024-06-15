@@ -5,7 +5,7 @@ import jwt
 from datetime import datetime, timedelta
 import hashlib
 from functools import wraps
-import babel.numbers #install lib babel pip install babel
+import babel.numbers
 
 client = MongoClient('mongodb+srv://rfi:senku27@cluster0.djattxa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.dbreseller
@@ -163,6 +163,7 @@ def addproduk():
     if request.method == 'POST':
         nama= request.form['nama']
         harga=request.form['harga']
+        stok= request.form['stok']
         ukuran=request.form.getlist('ukuran')
         deskripsi= request.form['deskripsi']
         gambar= request.files['gambar']
@@ -182,6 +183,7 @@ def addproduk():
             'nama':nama,
             'harga':harga,
             'ukuran':ukuran,
+            'stok':stok,
             'gambar':file_asli,
             'deskripsi':deskripsi
         }
@@ -195,6 +197,7 @@ def editproduk(_id):
         id = request.form['_id']
         nama= request.form['nama']
         harga=request.form['harga']
+        stok= request.form['stok']
         ukuran=request.form.getlist('ukuran')
         deskripsi= request.form['deskripsi']
         gambar= request.files['gambar']
@@ -204,6 +207,7 @@ def editproduk(_id):
             'nama':nama,
             'harga':harga,
             'ukuran':ukuran,
+            'stok':stok,
             'deskripsi':deskripsi
         }
         if gambar:
