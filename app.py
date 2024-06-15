@@ -253,10 +253,11 @@ def shop():
 def detail(_id):
     id=ObjectId(_id)
     data=list(db.produk.find({'_id':id}))
+    data2=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
             item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
-    return render_template('detail.html', data=data[0])
+    return render_template('detail.html', data=data[0],data2=data2)
 
 @app.route('/detail', methods=['GET'])
 def detailt():
