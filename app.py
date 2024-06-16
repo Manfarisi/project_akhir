@@ -7,7 +7,7 @@ import hashlib
 from functools import wraps
 import babel.numbers
 
-client = MongoClient('mongodb+srv://rfi:senku27@cluster0.djattxa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+client = MongoClient('mongodb+srv://resellerida:idariseller@cluster0.yckjm3g.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.dbreseller
 
 SECRET_KEY = 'IDA'
@@ -272,11 +272,6 @@ def detailt():
 def contact():
     msg = request.args.get('msg')
     return render_template('contact.html', msg=msg)
-
-@app.route('/cart', methods=['GET'])
-def cart():
-    msg = request.args.get('msg')
-    return render_template('cart.html', msg=msg)
 
 @app.route('/checkout', methods=['GET'])
 def checkout():

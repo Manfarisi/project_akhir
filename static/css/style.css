@@ -52,6 +52,134 @@ html {
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
   display: block;
 }
+
+.about-box-main{
+  padding: 50px 0px 30px 60px;
+}
+
+.about-box-main p{
+  padding-bottom: 20px;
+}
+
+.noo-sh-title{
+  font-size: 28px;
+  text-transform: uppercase;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.our-team {
+  margin-top: 100px;
+  padding-top: 90px;
+  padding-bottom: 90px;
+  border-top: 3px dotted #eee;
+}
+
+.our-team .section-heading {
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.our-team .section-heading h2 {
+  margin-bottom: 10px;
+}
+
+.our-team .team-item .thumb {
+  position: relative;
+}
+
+.our-team .team-item .thumb img {
+  width: 100%;
+  overflow: hidden;
+}
+
+.our-team .team-item .thumb .hover-effect {
+  position: absolute;
+  background-color: rgba(0,0,0,0.9);
+  width: 100%;
+  text-align: center;
+  top: 0;
+  bottom: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .3s;
+}
+
+.our-team .team-item .thumb:hover .hover-effect {
+  opacity: 1;
+  visibility: visible;
+}
+
+.our-team .team-item .thumb .hover-effect .inner-content {
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  width: 100%;
+  transform: translateY(-22px);
+}
+
+.our-team .team-item .thumb .hover-effect .inner-content ul li {
+  display: inline-block;
+  margin: 0px 5px;
+}
+
+.our-team .team-item .thumb .hover-effect .inner-content ul li a {
+  width: 44px;
+  height: 44px;
+  background-color: #fff;
+  color: #2a2a2a;
+  display: inline-block;
+  text-align: center;
+  line-height: 44px;
+  border-radius: 50%;
+  transition: all .3s;
+}
+
+.our-team .team-item .thumb .hover-effect .inner-content ul li a:hover {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.our-team .team-item .down-content {
+  text-align: center;
+  padding-top: 25px;
+}
+
+.our-team .team-item .down-content h4 {
+  font-size: 24px;
+  color: #2a2a2a;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.our-team .team-item .down-content span {
+  font-size: 14px;
+  color: #a1a1a1;
+  font-weight: 500;
+  display: block;
+  font-style: italic;
+}
+
+.our-team .team-item .down-content {
+  text-align: center;
+  padding-top: 25px;
+}
+
+.our-team .team-item .down-content h4 {
+  font-size: 24px;
+  color: #2a2a2a;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.our-team .team-item .down-content span {
+  font-size: 14px;
+  color: #a1a1a1;
+  font-weight: 500;
+  display: block;
+  font-style: italic;
+}
+
 /* TESTIMONI START */
 
 .layout_padding {
