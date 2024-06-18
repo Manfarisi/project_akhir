@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import hashlib
 from functools import wraps
 import babel.numbers
+import os
 
 
 
@@ -286,41 +287,59 @@ def contact():
     return render_template('contact.html', msg=msg)
 
 
-
-@app.route('/checkout/<_id>', methods=['GET','POST'])
+@app.route('/checkout/<_id>', methods=['GET', 'POST'])
 def checkout(_id):
-    id=ObjectId(_id)
-
+    id = ObjectId(_id)
+    
     if request.method == 'POST':
-        # Ambil data dari form
-        # idpdk = request.form['id']
-        kuantitas = request.form['kuantitas']
-        ukuran = request.form['ukuran']
+        try:
+            # Ambil data dari form
+            kuantitas = int(request.form['kuantitas'])
+            ukuran = request.form['ukuran']
+            
+            # Dapatkan data produk dari database
+            product = db.produk.find_one({'_id': id})
+            
+            if not product:
+                return "Product not found", 404
+            
+            # Hitung total harga
+            harga = product['harga']
+            
+            # Ensure harga is a numeric type
+            if not isinstance(harga, (int, float)):
+                harga = float(harga)
+            
+            total_harga = harga * kuantitas
+            
+            # Konversi mata uang
+            hargaAsli = babel.numbers.format_currency(harga, "IDR", locale='id_ID')
+            total = babel.numbers.format_currency(total_harga, "IDR", locale='id_ID')
+            
+            # Simpan pesanan ke database
+            pesanan = {
+                'idpdk': product['_id'],
+                'nama': product['nama'],
+                'kuantitas': kuantitas,
+                'ukuran': ukuran,
+                'harga': hargaAsli,
+                'total_harga': total
+            }
+            
+            result = db.pesanan.insert_one(pesanan)
+            order_id = result.inserted_id
+            
+            return redirect(url_for('order', order_id=order_id))
         
-        # Dapatkan data produk dari database
-        product = db.produk.find_one({'_id': id})
-        
-        # Hitung total harga
-        harga = product['harga']
-        total_harga = int(harga) * int(kuantitas)
-        
-        # Konversi mata uang
-        hargaAsli=babel.numbers.format_currency(harga, "IDR", locale='id_ID')
-        total=babel.numbers.format_currency(total_harga, "IDR", locale='id_ID')
-
-        # Simpan pesanan ke database
-        pesanan = {
-            'idpdk':product['_id'],
-            'nama': product['nama'],
-            'kuantitas': kuantitas,
-            'ukuran':ukuran,
-            'harga':hargaAsli,
-            'total_harga': total
-
-        }
-        
-        db.pesanan.insert_one(pesanan)
-        return redirect(url_for('order', order_id=pesanan['_id']))
+        except (ValueError, TypeError) as e:
+            return f"Invalid input: {e}", 400
+    
+    # Handle GET request, typically rendering the checkout page
+    product = db.produk.find_one({'_id': id})
+    if not product:
+        return "Product not found", 404
+    
+    return render_template('checkout.html', product=product)
     
 @app.route('/order/<order_id>', methods=['GET'])
 def order(order_id):
@@ -335,66 +354,132 @@ def batal(_id):
     return redirect(url_for('shop',message="Pesanan Dibatalkan"))
 
 
-@app.route('/pesan/<_id>', methods=['POST'])
-def pesanan(_id):
-        token_receive = request.cookies.get("ida")
-        id=ObjectId(_id)
+# @app.route('/pesan/<_id>', methods=['POST'])
+# def pesanan(_id):
+#         token_receive = request.cookies.get("ida")
+#         id=ObjectId(_id)
 
-        try:
-            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-            # Dapatkan data produk dari database
-            pesanan = db.pesanan.find_one({'_id': id})
-            idpdk = pesanan['idpdk']
-            print(idpdk)
-            produc=db.produk.find_one({'_id': ObjectId(idpdk)})
-            # mengambil stok
-            stok=int(produc['stok'])
+#         try:
+#             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+#             # Dapatkan data produk dari database
+#             pesanan = db.pesanan.find_one({'_id': id})
+#             idpdk = pesanan['idpdk']
+#             print(idpdk)
+#             produc=db.produk.find_one({'_id': ObjectId(idpdk)})
+#             # mengambil stok
+#             stok=int(produc['stok'])
             
 
-            user_info = db.users.find_one({"username": payload["id"]})
-            user=user_info['username']
+#             user_info = db.users.find_one({"username": payload["id"]})
+#             user=user_info['username']
 
-            nama = request.form["namaUser"]
-            nomor = request.form["no"]
-            alamat = request.form["alamat"]
-            gambar = request.files["bukti"]
-            namapdk = pesanan['nama']
-            kuantitas = pesanan['kuantitas']
-            harga = pesanan['harga']
-            ukuran =  pesanan['ukuran']
-            total = pesanan['total_harga']
+#             nama = request.form["namaUser"]
+#             nomor = request.form["no"]
+#             alamat = request.form["alamat"]
+#             gambar = request.files["bukti"]
+#             namapdk = pesanan['nama']
+#             kuantitas = pesanan['kuantitas']
+#             harga = pesanan['harga']
+#             ukuran =  pesanan['ukuran']
+#             total = pesanan['total_harga']
 
-            newStok=int(stok)- int(kuantitas)
+#             newStok=int(stok)- int(kuantitas)
 
-            if gambar:
-                today = datetime.now()
-                mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
-                gambar_asli=gambar.filename
-                file_gambar=gambar_asli.split('.')[-1]
-                file_asli=f"{mytime}.{file_gambar}"
-                file_path=f"static/assets/ImagePath/Bukti/{user}_{mytime}.{file_gambar}"
-                gambar.save(file_path)
-            else:
-                gambar=None
+#             if gambar:
+#                 today = datetime.now()
+#                 mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+#                 gambar_asli=gambar.filename
+#                 file_gambar=gambar_asli.split('.')[-1]
+#                 file_asli=f"{mytime}.{file_gambar}"
+#                 file_path=f"static/assets/ImagePath/Bukti/{user}_{mytime}.{file_gambar}"
+#                 gambar.save(file_path)
+#             else:
+#                 gambar=None
 
-            doc = {
-                "username": user_info["username"],
-                "nama": nama,
-                "nomor": nomor,
-                "alamat": alamat,
-                "bukti": file_asli,
-                "namapdk": namapdk,
-                "harga": harga,
-                "kuantitas": kuantitas,
-                "ukuran": ukuran,
-                "total": total,
-                "status":"Di Proses"
-            }
-            db.orderan.insert_one(doc)
-            db.produk.update_one({'_id':idpdk}, {'$set':{'stok':newStok}})
-            return redirect(url_for("statusUser", message ="Berhasil melakukan pemesanan"))
-        except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-            return redirect(url_for("home"))
+#             doc = {
+#                 "username": user_info["username"],
+#                 "nama": nama,
+#                 "nomor": nomor,
+#                 "alamat": alamat,
+#                 "bukti": file_asli,
+#                 "namapdk": namapdk,
+#                 "harga": harga,
+#                 "kuantitas": kuantitas,
+#                 "ukuran": ukuran,
+#                 "total": total,
+#                 "status":"Di Proses"
+#             }
+#             db.orderan.insert_one(doc)
+#             db.produk.update_one({'_id':idpdk}, {'$set':{'stok':newStok}})
+#             return redirect(url_for("statusUser", message ="Berhasil melakukan pemesanan"))
+#         except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#             return redirect(url_for("home"))
+
+@app.route('/pesan/<_id>', methods=['POST'])
+def pesanan(_id):
+    token_receive = request.cookies.get("ida")
+    id = ObjectId(_id)
+
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        
+        # Dapatkan data produk dari database
+        pesanan = db.pesanan.find_one({'_id': id})
+        idpdk = pesanan['idpdk']
+        print(idpdk)
+        product = db.produk.find_one({'_id': ObjectId(idpdk)})
+        
+        # Mengambil stok
+        stok = int(product['stok'])
+        
+        user_info = db.users.find_one({"username": payload["id"]})
+        user = user_info['username']
+
+        nama = request.form["namaUser"]
+        nomor = request.form["no"]
+        alamat = request.form["alamat"]
+        gambar = request.files["bukti"]
+        namapdk = pesanan['nama']
+        kuantitas = int(pesanan['kuantitas'])
+        harga = pesanan['harga']
+        ukuran = pesanan['ukuran']
+        total = pesanan['total_harga']
+
+        newStok = stok - kuantitas
+
+        file_asli = None
+        file_path = None
+
+        if gambar:
+            today = datetime.now()
+            mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+            gambar_asli = gambar.filename
+            file_gambar = gambar_asli.split('.')[-1]
+            file_asli = f"{mytime}.{file_gambar}"
+            file_path = os.path.join("static/assets/ImagePath/Bukti/{user}_{mytime}.{file_gambar}")
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            gambar.save(file_path)
+
+        doc = {
+            "username": user,
+            "nama": nama,
+            "nomor": nomor,
+            "alamat": alamat,
+            "bukti": file_asli,
+            "namapdk": namapdk,
+            "harga": harga,
+            "kuantitas": kuantitas,
+            "ukuran": ukuran,
+            "total": total,
+            "status": "Di Proses"
+        }
+        db.orderan.insert_one(doc)
+        db.produk.update_one({'_id': ObjectId(idpdk)}, {'$set': {'stok': newStok}})
+        return redirect(url_for("statusUser", message="Berhasil melakukan pemesanan"))
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 
 
 @app.route('/statusUser', methods=['GET'])
