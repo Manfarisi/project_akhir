@@ -96,14 +96,56 @@
                             <p>{{produk['deskripsi']}}</p>
                                </div>
                     
-                    <div class="tab-pane fade" id="tab-pane-2">
-                            <h4 class="mb-3">Testimoni</h4>
-                            <p>Ini adalah testimoni produk yang berguna untuk testimoni</p>
-                    </div>
+                               <div class="tab-pane fade" id="tab-pane-2">
+                                <section class="client_section layout_padding p-0">
+ 
+                                    <div class="container px-0">
+                                        <div id="customCarousel2" class="carousel  carousel-fade" data-ride="carousel">
+                                            <div class="carousel-inner">
+                                                {% for review in review %}
+                                                <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                                                    <div class="box">
+                                                    <div class="client_info">
+                                                <div class="client_name">
+                                                  <h5>
+                                                    {{ review['username'] }}
+                                                  </h5>
+                                                  <h6>
+                                                    {{ review['nama'] }} ({{ review['rating'] }}/5)
+                                                  </h6>
+                                                </div>
+                                                <i class="fa fa-quote-left" aria-hidden="true"></i>
+                                              </div>
+                                              <p>
+                                                {{ review['review_text'] }}
+                                            </p>
+                                            <p><small>{{ review['timestamp'] }}</small></p>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                            
+                                    </div>
+                                    <div class="carousel_btn-box">
+                                        <a class="carousel-control-prev" href="#customCarousel2" role="button" data-slide="prev">
+                                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                            <span class="sr-only">Previous</span>
+                                          </a>
+                                          <a class="carousel-control-next" href="#customCarousel2" role="button" data-slide="next">
+                                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                            <span class="sr-only">Next</span>
+                                          </a>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                  
+                                  </section>
+                            </div>
+    
 
                     <div class="tab-pane fade" id="tab-pane-3">
                         <div class="row">
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <h4 class="mb-4">1 review for "Product Name"</h4>
                                 <div class="media mb-4">
                                     <div class="media-body">
@@ -111,23 +153,24 @@
                                         <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-md-6">
-                                <h4 class="mb-4">Leave a review</h4>
+                                <h4 class="mb-4">Tinggalkan ulasan</h4>
                                 <div class="d-flex my-3">
                                     <p class="mb-0 mr-2">Your Rating * :</p>
                                     <div class="text-primary">
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star" onclick="setRating(1)"></i>
+                                        <i class="far fa-star" onclick="setRating(2)"></i>
+                                        <i class="far fa-star" onclick="setRating(3)"></i>
+                                        <i class="far fa-star" onclick="setRating(4)"></i>
+                                        <i class="far fa-star" onclick="setRating(5)"></i>
                                     </div>
                                 </div>
-                                <form>
+                                <form action="/submit_review/{{produk['_id']}}" method="POST">
+                                    <input type="hidden" name="rating" id="rating" value="0">
                                     <div class="form-group">
                                         <label for="message">Your Review *</label>
-                                        <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
+                                        <textarea id="message" name="review_text" cols="30" rows="5" class="form-control"></textarea>
                                     </div>
                                     <div class="form-group mb-0">
                                         <input type="submit" value="Tambah Ulasan" class="btn btn-primary px-3">
@@ -188,3 +231,21 @@
 
 
     {% include 'footer.html' %}
+
+    <script>
+        function setRating(rating) {
+            let $ratingInput = $('#rating');
+            if ($ratingInput.length) {
+                $ratingInput.val(rating);
+            }
+
+            let $stars = $('.text-primary i');
+            $stars.each(function(index) {
+                if (index < rating) {
+                    $(this).removeClass('far').addClass('fas');
+                } else {
+                    $(this).removeClass('fas').addClass('far');
+                }
+            });
+        }
+    </script>

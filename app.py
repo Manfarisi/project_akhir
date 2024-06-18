@@ -57,10 +57,11 @@ def home():
             return render_template('admin/dashboard.html', user_info=user_info)
         elif role == "user":
             data=list(db.produk.find({}))
+            review=list(db.reviews.find({}))
             for item in data:
                 if 'harga' in item:
                     item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
-            return render_template('index.html', user_info=user_info,data=data)
+            return render_template('index.html', user_info=user_info,data=data,review=review)
         else:
             return redirect(url_for('login', msg="Role not recognized"))
 
@@ -301,6 +302,33 @@ def searchproduk():
 # =========================================================================================
 # USER PAGE
 
+@app.route('/submit_review/<_id>', methods=['POST'])
+def submit_review(_id):
+    id=ObjectId(_id)
+    
+    token_receive = request.cookies.get("ida")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload["id"]})
+        product_id=db.produk.find_one({'_id':id})
+        produk = product_id['nama'] 
+        rating = int(request.form.get('rating'))
+        review_text = request.form.get('review_text')
+
+        review = {
+                'username': user_info['username'],
+                'product_id': product_id['_id'],
+                'nama': produk,
+                'rating': rating,
+                'review_text': review_text,
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+
+        db.reviews.insert_one(review)
+        return redirect(url_for('detail',_id=id))
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 @app.route('/searchShop', methods=['POST'])
 def searchshop():
     query = request.form.get('query')
@@ -323,12 +351,13 @@ def shop():
 @app.route('/detail/<_id>', methods=['GET'])
 def detail(_id):
     id=ObjectId(_id)
+    review=list(db.reviews.find({'product_id':id}))
     data=list(db.produk.find({'_id':id}))
     data2=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
             item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
-    return render_template('detail.html', produk=data[0],data2=data2)
+    return render_template('detail.html', produk=data[0],data2=data2,review=review)
 
 
 
