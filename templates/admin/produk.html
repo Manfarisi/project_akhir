@@ -49,10 +49,16 @@
       </div>
       <!-- End Page Title -->
       <div class="search-bar">
-        <form class="search-form d-flex align-items-center" method="POST" action="#">
-          <input type="text" name="query" placeholder="Search" title="Enter search keyword" />
+        <form class="search-form d-flex align-items-center" method="POST" action="/searchProduk">
+          <input type="text" name="query" value="{{query}}" placeholder="Search" title="Enter search keyword" />
           <button type="submit" title="Search"><i class="bi bi-search"></i></button>
         </form>
+        <li class="text-secondary">
+          <small class="text-secondary">Pencarian hanya berdasarkan nama produk/warna*</small>
+        </li>
+        <li class="text-secondary">
+          <small class="text-secondary">Hapus pencarian lalu klik tombol cari untuk mengembalikan tampilan*</small>
+        </li>
       </div>
       <!-- End Search Bar -->
 

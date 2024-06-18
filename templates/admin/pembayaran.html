@@ -39,10 +39,16 @@
       <!-- End Page Title -->
 
       <div class="search-bar">
-        <form class="search-form d-flex align-items-center" method="POST" action="#">
-          <input type="text" name="query" placeholder="Search" title="Enter search keyword" />
+        <form class="search-form d-flex align-items-center" method="POST" action="/search">
+          <input type="text" name="query" value="{{query}}" placeholder="Search" title="Enter search keyword" />
           <button type="submit" title="Search"><i class="bi bi-search"></i></button>
         </form>
+        <li class="text-secondary">
+          <small class="text-secondary">Pencarian hanya berdasarkan username*</small>
+        </li>
+        <li class="text-secondary">
+          <small class="text-secondary">Hapus pencarian lalu klik tombol cari untuk mengembalikan tampilan*</small>
+        </li>
       </div>
       <!-- End Search Bar -->
 
@@ -54,6 +60,7 @@
                 <thead class="thead-light">
                   <tr>
                     <th class="border-0 text-center rounded-start">No</th>
+                    <th class="border-0 text-center">Username</th>
                     <th class="border-0 text-center">Nama</th>
                     <th class="border-0 text-center">No.HP</th>
                     <th class="border-0 text-center">Alamat</th>
@@ -69,6 +76,7 @@
                   {% for orderan in orderan %}
                     
                   <td class="text-center">{{loop.index}}</td>
+                  <td class="text-center">{{orderan['username']}}</td>
                   <td class="text-center">{{orderan['nama']}}</td>
                   <td class="text-center">{{orderan['nomor']}}</td>
                   <td class="text-center">{{orderan['alamat']}}</td>
@@ -78,8 +86,7 @@
                   <td class="text-center">{{orderan['total']}}</td>
 
                   <td class="text-center">
-                    <a type="button" class="btn btn-primary" href="../static/assets/ImagePath/Bukti/{{orderan['bukti']}}"> Lihat </a>
-                    </td>
+                    <a type="button" class="btn btn-primary" href="/lihat_bukti/{{orderan['_id']}}"> Lihat </a></td>
                     </tr>
                   {% endfor %}
               </table>
