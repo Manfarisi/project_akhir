@@ -401,67 +401,6 @@ def batal(_id):
     return redirect(url_for('shop',message="Pesanan Dibatalkan"))
 
 
-# @app.route('/pesan/<_id>', methods=['POST'])
-# def pesanan(_id):
-#         token_receive = request.cookies.get("ida")
-#         id=ObjectId(_id)
-
-#         try:
-#             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-#             # Dapatkan data produk dari database
-#             pesanan = db.pesanan.find_one({'_id': id})
-#             idpdk = pesanan['idpdk']
-#             print(idpdk)
-#             produc=db.produk.find_one({'_id': ObjectId(idpdk)})
-#             # mengambil stok
-#             stok=int(produc['stok'])
-            
-
-#             user_info = db.users.find_one({"username": payload["id"]})
-#             user=user_info['username']
-
-#             nama = request.form["namaUser"]
-#             nomor = request.form["no"]
-#             alamat = request.form["alamat"]
-#             gambar = request.files["bukti"]
-#             namapdk = pesanan['nama']
-#             kuantitas = pesanan['kuantitas']
-#             harga = pesanan['harga']
-#             ukuran =  pesanan['ukuran']
-#             total = pesanan['total_harga']
-
-#             newStok=int(stok)- int(kuantitas)
-
-#             if gambar:
-#                 today = datetime.now()
-#                 mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
-#                 gambar_asli=gambar.filename
-#                 file_gambar=gambar_asli.split('.')[-1]
-#                 file_asli=f"{mytime}.{file_gambar}"
-#                 file_path=f"static/assets/ImagePath/Bukti/{user}_{mytime}.{file_gambar}"
-#                 gambar.save(file_path)
-#             else:
-#                 gambar=None
-
-#             doc = {
-#                 "username": user_info["username"],
-#                 "nama": nama,
-#                 "nomor": nomor,
-#                 "alamat": alamat,
-#                 "bukti": file_asli,
-#                 "namapdk": namapdk,
-#                 "harga": harga,
-#                 "kuantitas": kuantitas,
-#                 "ukuran": ukuran,
-#                 "total": total,
-#                 "status":"Di Proses"
-#             }
-#             db.orderan.insert_one(doc)
-#             db.produk.update_one({'_id':idpdk}, {'$set':{'stok':newStok}})
-#             return redirect(url_for("statusUser", message ="Berhasil melakukan pemesanan"))
-#         except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-#             return redirect(url_for("home"))
-
 @app.route('/pesan/<_id>', methods=['POST'])
 def pesanan(_id):
     token_receive = request.cookies.get("ida")
@@ -518,7 +457,7 @@ def pesanan(_id):
             "kuantitas": kuantitas,
             "ukuran": ukuran,
             "total": total,
-            "status": "Di Proses"
+            "status": "DiProses"
         }
         db.orderan.insert_one(doc)
         db.produk.update_one({'_id': ObjectId(idpdk)}, {'$set': {'stok': newStok}})
