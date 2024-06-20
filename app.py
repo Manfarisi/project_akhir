@@ -351,13 +351,14 @@ def shop():
 @app.route('/detail/<_id>', methods=['GET'])
 def detail(_id):
     id=ObjectId(_id)
+    msg = request.args.get('msg')
     review=list(db.reviews.find({'product_id':id}))
     data=list(db.produk.find({'_id':id}))
     data2=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
             item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
-    return render_template('detail.html', produk=data[0],data2=data2,review=review)
+    return render_template('detail.html', produk=data[0],data2=data2,review=review,msg=msg)
 
 
 
@@ -373,35 +374,43 @@ def checkout(_id):
     id=ObjectId(_id)
 
     if request.method == 'POST':
-        # Ambil data dari form
-        # idpdk = request.form['id']
-        kuantitas = request.form['kuantitas']
-        ukuran = request.form['ukuran']
-        
-        # Dapatkan data produk dari database
-        product = db.produk.find_one({'_id': id})
-        
-        # Hitung total harga
-        harga = product['harga']
-        total_harga = int(harga) * int(kuantitas)
-        
-        # Konversi mata uang
-        hargaAsli=babel.numbers.format_currency(harga, "IDR", locale='id_ID')
-        total=babel.numbers.format_currency(total_harga, "IDR", locale='id_ID')
+        stokpdk = db.produk.find_one({'_id': id})
+        kuantitas = int(request.form['kuantitas'])
+        if kuantitas > int(stokpdk['stok']):
+            msg = "Jumlah melebihi stok*"
+            # return render_template('detail.html', _id=id, msg=msg)
+            return redirect(url_for('detail', _id=id, msg=msg))
+    
+        else:
+            # Ambil data dari form
+            # idpdk = request.form['id']
+            # kuantitas = request.form['kuantitas']
+            ukuran = request.form['ukuran']
+            
+            # Dapatkan data produk dari database
+            product = db.produk.find_one({'_id': id})
+            
+            # Hitung total harga
+            harga = product['harga']
+            total_harga = int(harga) * int(kuantitas)
+            
+            # Konversi mata uang
+            hargaAsli=babel.numbers.format_currency(harga, "IDR", locale='id_ID')
+            total=babel.numbers.format_currency(total_harga, "IDR", locale='id_ID')
 
-        # Simpan pesanan ke database
-        pesanan = {
-            'idpdk':product['_id'],
-            'nama': product['nama'],
-            'kuantitas': kuantitas,
-            'ukuran':ukuran,
-            'harga':hargaAsli,
-            'total_harga': total
+            # Simpan pesanan ke database
+            pesanan = {
+                'idpdk':product['_id'],
+                'nama': product['nama'],
+                'kuantitas': kuantitas,
+                'ukuran':ukuran,
+                'harga':hargaAsli,
+                'total_harga': total
 
-        }
-        
-        db.pesanan.insert_one(pesanan)
-        return redirect(url_for('order', order_id=pesanan['_id']))
+            }
+            
+            db.pesanan.insert_one(pesanan)
+            return redirect(url_for('order', order_id=pesanan['_id']))
     
 @app.route('/order/<order_id>', methods=['GET'])
 def order(order_id):

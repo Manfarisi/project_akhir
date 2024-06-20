@@ -74,10 +74,15 @@
                         {% if produk['stok'] == 0 %}
                         <button type="button" class="btn btn-secondary disabled px-3" ><i class="fa fa-shopping-cart mr-1"></i> Checkout</button>
                         <p class="px-2 "><small class="text-danger">Stok habis*</small></p>
+
+                        {% elif msg %}
+                        <button type="submit" class="btn btn-primary px-3" ><i class="fa fa-shopping-cart mr-1"></i> Checkout</button>
+                        <p class="px-2"><small class="text-danger">{{ msg }}</small></p>
                     {% else %}
                         <button type="submit" class="btn btn-primary px-3" ><i class="fa fa-shopping-cart mr-1"></i> Checkout</button>
                     {% endif %}
-                    </div>
+                </div>
+     
 
                 </div>
             </div>
