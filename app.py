@@ -498,7 +498,7 @@ def pesanan(_id):
                 "kuantitas": kuantitas,
                 "ukuran": ukuran,
                 "total": total,
-                "status":"Di Proses"
+                "status":"Diproses"
             }
             db.orderan.insert_one(doc)
             db.produk.update_one({'_id':idpdk}, {'$set':{'stok':newStok}})

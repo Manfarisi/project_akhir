@@ -63,11 +63,11 @@
   $(document).ready(function() {
     $(".status").each(function() {
       let status = $(this).text();
-      if (status === "Di Proses") {
+      if (status === "Diproses") {
           $(this).addClass("text-info");
-      } else if (status === "Di Kirim") {
+      } else if (status === "Dikirim") {
           $(this).removeClass("text-info").addClass("text-warning");
-      } else if (status === "Di Terima") {
+      } else if (status === "Diterima") {
           $(this).removeClass("text-warning").addClass("text-success");
       }
     })
@@ -87,7 +87,7 @@ function update(id) {
         url: "/update_status/" + id,
         type: "POST",
         data: {
-          status: "Di Terima",
+          status: "Diterima",
         },
         success: function (response) {
           if (response.result === "success") {

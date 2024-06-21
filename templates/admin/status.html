@@ -84,12 +84,14 @@
                   <td class="text-center status">{{orderan['status']}}</td>
 
                   <td class="text-center">
-                    {% if orderan['status'] == 'Di Proses' %}
+                    {% if orderan['status'] == 'Diproses' %}
                     <button onclick="update('{{ orderan._id }}')" id="kirim-{{ orderan._id }}" type="button" class="btn btn-sm btn-primary">Kirim</button>
                     <button onclick="batal('{{ orderan._id }}')" id="batal-{{ orderan._id }}" type="button" class="btn btn-sm btn-secondary d-none">Batal</button>
-                    {% elif orderan['status'] == 'Di Kirim' %}
+                    {% elif orderan['status'] == 'Dikirim' %}
                     <button onclick="update('{{ orderan._id }}')" id="kirim-{{ orderan._id }}" type="button" class="btn btn-sm btn-primary d-none">Kirim</button>
                     <button onclick="batal('{{ orderan._id }}')" id="batal-{{ orderan._id }}" type="button" class="btn btn-sm btn-secondary">Batal</button>
+                    {% elif orderan['status'] == 'Diterima' %}
+                    <button onclick="hapus('{{ orderan._id }}')" id="hapus-{{ orderan._id }}" type="button" class="btn btn-sm btn-danger ">Hapus</button>
                     {% endif %}
                   </td>
                 </tr>
@@ -132,11 +134,11 @@
       $(document).ready(function () {
         $(".status").each(function () {
           let status = $(this).text();
-          if (status === "Di Proses") {
+          if (status === "Diproses") {
             $(this).addClass("text-info");
-          } else if (status === "Di Kirim") {
+          } else if (status === "Dikirim") {
             $(this).removeClass("text-info").addClass("text-warning");
-          } else if (status === "Di Terima") {
+          } else if (status === "Diterima") {
             $(this).removeClass("text-warning").addClass("text-success");
           }
         });
@@ -157,7 +159,7 @@
               url: "/update_status/" + id,
               type: "POST",
               data: {
-                status: "Di Kirim",
+                status: "Dikirim",
               },
               success: function (response) {
                 if (response.result === "success") {
@@ -230,6 +232,36 @@
         });
       }
     
+
+      
+function hapus(id) {
+  $.ajax({
+    url: "/delete_order/" + id,
+    type: "POST",
+   
+    success: function (response) {
+      if (response.result === "success") {
+
+        Swal.fire({
+          title: "Selesai",
+          icon: "success",
+        }).then(() => {
+          window.location.reload()
+           
+           
+        });
+      }
+    },
+    error: function (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Terjadi kesalahan saat menghapus.",
+        icon: "error",
+      });
+    },
+  });
+}
+
     </script>
   </body>
 </html>
