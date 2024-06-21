@@ -242,6 +242,26 @@ def pembayaran():
 
     return render_template('admin/pembayaran.html',orderan=orderan)
 
+@app.route('/testimoni', methods=['GET','POST'])
+def testimoni():
+    testimoni=list(db.reviews.find({}))
+    return render_template('admin/testimoni.html',testimoni=testimoni)
+
+@app.route('/searchTesti', methods=['POST'])
+def searchTesti():
+    query = request.form.get('query')
+    if query:
+        # Lakukan kueri MongoDB untuk mencari orderan berdasarkan username
+        results = list(db.reviews.find({'username': {'$regex': query, '$options': 'i'}}))
+    else:
+        # Jika tidak ada pencarian, tampilkan semua data
+        results = list(db.reviews.find({}))
+    return render_template('admin/testimoni.html', testimoni=results,query=query)
+
+@app.route('/deleteTestimoni/<_id>', methods=['GET','POST'])
+def deleteTesti(_id):
+    db.reviews.delete_one({'_id':ObjectId(_id)})
+    return redirect(url_for('testimoni',message="Data Berhasil Dihapus"))
 
 @app.route('/status', methods=['GET','POST'])
 def status():
