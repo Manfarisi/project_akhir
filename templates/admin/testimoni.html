@@ -28,18 +28,18 @@
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Status</h1>
+        <h1>Testimoni</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Status</li>
+            <li class="breadcrumb-item active">Testimoni</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
 
       <div class="search-bar">
-        <form class="search-form d-flex align-items-center" method="POST" action="/search">
+        <form class="search-form d-flex align-items-center" method="POST" action="/searchTesti">
           <input type="text" name="query" value="{{query}}" placeholder="Search" title="Enter search keyword" />
           <button type="submit" title="Search"><i class="bi bi-search"></i></button>
         </form>
@@ -56,41 +56,31 @@
         <div class="card border-0 shadow mb-4">
           <div class="card-body">
             <div class="table-responsive">
-              <input type="hidden" id="_id" value="{{orderan['_id']}}" />
+              <input type="hidden" id="_id" value="{{testimoni['_id']}}" />
               <table class="table table-centered table-nowrap mb-0 rounded mt-3">
                 <thead class="thead-light">
                   <tr>
                     <th class="border-0 text-center rounded-start">No</th>
                     <th class="border-0 text-center">Username</th>
-                    <th class="border-0 text-center">Nama</th>
                     <th class="border-0 text-center">Nama Produk</th>
-                    <th class="border-0 text-center">Kuantitas</th>
-                    <th class="border-0 text-center">Ukuran</th>
-                    <th class="border-0 text-center">Total</th>
-                    <th class="border-0 text-center">Status</th>
+                    <th class="border-0 text-center">Ranting</th>
+                    <th class="border-0 text-center">Ulasan</th>
+                    <th class="border-0 text-center">Waktu</th>
                     <th class="border-0 rounded-end text-center">Aksi</th>
                   </tr>
                 </thead>
 
                 <tr>
-                  {% for orderan in orderan %}
+                  {% for testimoni in testimoni %}
                   <td class="text-center">{{loop.index}}</td>
-                  <td class="text-center">{{orderan['username']}}</td>
-                  <td class="text-center">{{orderan['nama']}}</td>
-                  <td class="text-center">{{orderan['namapdk']}}</td>
-                  <td class="text-center">{{orderan['kuantitas']}}</td>
-                  <td class="text-center">{{orderan['ukuran']}}</td>
-                  <td class="text-center">{{orderan['total']}}</td>
-                  <td class="text-center status">{{orderan['status']}}</td>
+                  <td class="text-center">{{testimoni['username']}}</td>
+                  <td class="text-center">{{testimoni['nama']}}</td>
+                  <td class="text-center">{{testimoni['rating']}}</td>
+                  <td class="text-center">{{testimoni['review_text']}}</td>
+                  <td class="text-center">{{testimoni['timestamp']}}</td>
 
                   <td class="text-center">
-                    {% if orderan['status'] == 'Di Proses' %}
-                    <button onclick="update('{{ orderan._id }}')" id="kirim-{{ orderan._id }}" type="button" class="btn btn-sm btn-primary">Kirim</button>
-                    <button onclick="batal('{{ orderan._id }}')" id="batal-{{ orderan._id }}" type="button" class="btn btn-sm btn-secondary d-none">Batal</button>
-                    {% elif orderan['status'] == 'Di Kirim' %}
-                    <button onclick="update('{{ orderan._id }}')" id="kirim-{{ orderan._id }}" type="button" class="btn btn-sm btn-primary d-none">Kirim</button>
-                    <button onclick="batal('{{ orderan._id }}')" id="batal-{{ orderan._id }}" type="button" class="btn btn-sm btn-secondary">Batal</button>
-                    {% endif %}
+                    <a onclick="del()" class="btn btn-danger" href="/deleteTestimoni/{{testimoni['_id']}}">Hapus</a>
                   </td>
                 </tr>
                 {% endfor %}
@@ -145,7 +135,7 @@
 
       function update(id) {
         Swal.fire({
-          title: "Anda yakin pesanan ini siap dikirim?",
+          title: "Anda yakin pesanan ini siap di kirim?",
           icon: "question",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
