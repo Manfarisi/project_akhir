@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, jsonify,redirect,url_for,make_response, flash,send_file
+from flask import Flask, render_template, request, jsonify,redirect,url_for,make_response,flash,send_file
 from bson import ObjectId
 from pymongo import MongoClient
 import jwt
 from datetime import datetime, timedelta
 import hashlib
 from functools import wraps
-import babel.numbers
+from babel.numbers import format_currency
 import os
 
 # client = MongoClient('mongodb+srv://rfi:senku27@cluster0.djattxa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
@@ -36,10 +36,53 @@ def role_required(role):
         return wrapped
     return wrapper
 
+def convert_price_to_number(price_str):
+    print(f"Converting price: {price_str}")  # Tambahkan log ini untuk melihat harga yang dikonversi
+    # Hapus "Rp", titik, dan ubah koma menjadi titik
+    number_str = price_str.replace("Rp", "").replace(".", "").replace(",", ".")
+    try:
+        # Ubah ke float
+        result = float(number_str)
+        print(f"Converted {price_str} to {result}")  # Tambahkan log ini untuk melihat hasil konversi
+        return result
+    except ValueError:
+        print(f"Error: unable to convert {price_str} to float")
+        return 0.0
+
+def calculate_total_order_amount():
+    # Ambil semua orderan
+    orders = db.orderan.find({})
+    total_amount = 0.0  # Gunakan float untuk penjumlahan yang akurat
+    order_count = 0
+    for order in orders:
+        if 'total' in order:
+            try:
+                amount = convert_price_to_number(order['total'])
+                print(f"Order {order_count}: {order['total']} -> {amount}")  # Tambahkan log ini untuk melihat setiap penjumlahan
+                total_amount += amount
+            except ValueError as e:
+                print(f"Error converting {order['total']} to number: {e}")
+        else:
+            print(f"Order {order_count} has no 'total' field")
+        order_count += 1
+    print(f"Total amount calculated: {total_amount}")  # Tambahkan log ini untuk melihat total akhir
+    return total_amount
+
 @app.route('/admin')
 @role_required('admin')
 def admin_page():
-    return render_template('admin/dashboard.html')
+    total_amount = calculate_total_order_amount()
+    formatted_total_amount = format_currency(total_amount, "IDR", locale='id_ID')
+    stats = {
+        'total_products': db.produk.count_documents({}),
+        'total_orders': db.orderan.count_documents({}),
+        'orders_in_process': db.orderan.count_documents({'status': 'Diproses'}),
+        'orders_shipped': db.orderan.count_documents({'status': 'Dikirim'}),
+        'orders_accepted': db.orderan.count_documents({'status': 'Diterima'}),
+        'total_order_amount': formatted_total_amount
+    }
+
+    return render_template('admin/dashboard.html', stats=stats)
 
 @app.route('/user')
 @role_required('user')
@@ -54,7 +97,18 @@ def home():
         user_info = db.users.find_one({'username': payload["id"]})
         role = payload.get("role")
         if role == "admin":
-            return render_template('admin/dashboard.html', user_info=user_info)
+            total_amount = calculate_total_order_amount()
+            formatted_total_amount = format_currency(total_amount, "IDR", locale='id_ID')
+
+            stats = {
+                'total_products': db.produk.count_documents({}),
+                'total_orders': db.orderan.count_documents({}),
+                'orders_in_process': db.orderan.count_documents({'status': 'Diproses'}),
+                'orders_shipped': db.orderan.count_documents({'status': 'Dikirim'}),
+                'orders_accepted': db.orderan.count_documents({'status': 'Diterima'}),
+                'total_order_amount': formatted_total_amount
+            }
+            return render_template('admin/dashboard.html', user_info=user_info, stats=stats)
         elif role == "user":
             data=list(db.produk.find({}))
             review=list(db.reviews.find({}))

@@ -4,19 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
     <meta property="og:title" content="Admin Panel" />
     <meta property="og:description" content="This is Admin Panel" />
     <meta property="og:image" content="{{ url_for('static', filename='fav-icon.jpg') }}" />
-
     <title>RISELLER IDA | ADMIN</title>
-
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
-        <link href="../static/assets/img/fav-icon.png" rel="icon" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+    <link href="../static/assets/img/fav-icon.png" rel="icon" type="image/x-icon" />
     <!-- Vendor CSS Files -->
     <link href="../static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -25,20 +20,15 @@
     <link href="../static/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="../static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="../static/assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
     <!-- Template Main CSS File -->
     <link href="../static/assets/css/style.css" rel="stylesheet">
     <!-- JQUERY -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-   
-
 </head>
 
 <body>
     {% include 'admin/header.html' %}
-
     <main id="main" class="main">
-
         <div class="pagetitle">
             <h1>Dashboard</h1>
             <nav>
@@ -49,91 +39,119 @@
             </nav>
         </div>
         <!-- End Page Title -->
-
-        
-
-            <div class="row">
-
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Total Produk </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+        <div class="row">
+            <!-- Total Produk Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total Produk
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_products }}</div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-success shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Pesanan Masuk</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body justify-content-center">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                        Produk dikirim</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pending Requests Card Example -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-warning shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                         Belum dikirim</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                </div>
+                            <div class="col-auto">
+                                <i class="fas fa-box fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Total Orderan Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Pesanan Masuk Sudah Dibayar
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_orders }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Orderan Dikirim Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body justify-content-center">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Produk Dikirim
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.orders_shipped }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-truck fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Orderan Belum Dikirim Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Produk Belum Dikirim
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.orders_in_process }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clock fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Produk Diterima Client
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.orders_accepted }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clock fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total Pendapatan
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_order_amount }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clock fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
     <!-- ======= Footer ======= -->
     <!-- {% include 'admin/footer.html' %} -->
     <!-- End Footer -->
-
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-            class="bi bi-arrow-up-short"></i></a>
-
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
     <!-- Vendor JS Files -->
     <script src="../static/assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="../static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -143,13 +161,9 @@
     <script src="../static/assets/vendor/simple-datatables/simple-datatables.js"></script>
     <script src="../static/assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../static/assets/vendor/php-email-form/validate.js"></script>
-
     <!-- Template Main JS File -->
     <script src="../static/assets/js/main.js"></script>
     <script src="../static/assets/js/script.js"></script>
-
-
-
 </body>
 
 </html>
