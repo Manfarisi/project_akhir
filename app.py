@@ -8,8 +8,6 @@ from functools import wraps
 from babel.numbers import format_currency
 import os
 
-# client = MongoClient('mongodb+srv://rfi:senku27@cluster0.djattxa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-# db = client.dbreseller
 
 client = MongoClient('mongodb+srv://resellerida:idariseller@cluster0.yckjm3g.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.dbreseller
@@ -114,7 +112,7 @@ def home():
             review=list(db.reviews.find({}))
             for item in data:
                 if 'harga' in item:
-                    item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
+                    item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
             return render_template('index.html', user_info=user_info,data=data,review=review)
         else:
             return redirect(url_for('login', msg="Role not recognized"))
@@ -211,7 +209,7 @@ def produk():
     data=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
-            item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
+            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
         
     return render_template('admin/produk.html', data=data)
 
@@ -419,7 +417,7 @@ def shop():
     data=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
-            item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
+            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
     return render_template('shop.html',data=data)
 
 @app.route('/detail/<_id>', methods=['GET'])
@@ -431,7 +429,10 @@ def detail(_id):
     data2=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
-            item['harga']=babel.numbers.format_currency(item['harga'], "IDR", locale='id_ID')
+            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
+    for item in data2:
+        if 'harga' in item:
+            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
     return render_template('detail.html', produk=data[0],data2=data2,review=review,msg=msg)
 
 
@@ -469,8 +470,8 @@ def checkout(_id):
             total_harga = int(harga) * int(kuantitas)
             
             # Konversi mata uang
-            hargaAsli=babel.numbers.format_currency(harga, "IDR", locale='id_ID')
-            total=babel.numbers.format_currency(total_harga, "IDR", locale='id_ID')
+            hargaAsli=format_currency(harga, "IDR", locale='id_ID')
+            total=format_currency(total_harga, "IDR", locale='id_ID')
 
             # Simpan pesanan ke database
             pesanan = {
@@ -556,6 +557,7 @@ def pesanan(_id):
             }
             db.orderan.insert_one(doc)
             db.produk.update_one({'_id':idpdk}, {'$set':{'stok':newStok}})
+            db.pesanan.delete_one({'_id':ObjectId(_id)})
             return redirect(url_for("statusUser", message ="Berhasil melakukan pemesanan"))
         except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
             return redirect(url_for("home"))
