@@ -496,8 +496,10 @@ def order(order_id):
 
 @app.route('/batal/<_id>', methods=['GET'])
 def batal(_id):
+    pesanan = db.pesanan.find_one({'_id':ObjectId(_id)})
+    id=pesanan['idpdk']
     db.pesanan.delete_one({'_id':ObjectId(_id)})
-    return redirect(url_for('shop',message="Pesanan Dibatalkan"))
+    return redirect(url_for('detail',_id=id,message="Pesanan Dibatalkan"))
 
 
 @app.route('/pesan/<_id>', methods=['POST'])
