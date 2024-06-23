@@ -73,7 +73,7 @@ def admin_page():
     formatted_total_amount = format_currency(total_amount, "IDR", locale='id_ID')
     stats = {
         'total_products': db.produk.count_documents({}),
-        'total_orders': db.orderan.count_documents({}),
+        'total_orders': db.users.count_documents({}),
         'orders_in_process': db.orderan.count_documents({'status': 'Diproses'}),
         'orders_shipped': db.orderan.count_documents({'status': 'Dikirim'}),
         'orders_accepted': db.orderan.count_documents({'status': 'Diterima'}),
