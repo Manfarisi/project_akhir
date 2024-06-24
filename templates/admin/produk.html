@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta property="og:title" content="Reseller-IDA" />
+    <meta property="og:description" content="Tempat belanjan pakaian muslim" />
+    <meta
+      property="og:image"
+      content="{{ url_for('static', filename='img/WhatsApp Image 2024-06-20 at 19.39.16 (2).jpeg') }}"
+    />
     <title>RISELLER IDA | ADMIN</title>
 
     <!-- Google Fonts -->
@@ -104,7 +110,7 @@
                 {% endfor %}
               </td>
               <td class="text-center align-middle">{{produk['stok']}}</td>
-                  <td class="text-center align-middle"><img src="../static/assets/imagePath/{{produk['gambar']}}" alt="" width="50" /></td>
+                  <td class="text-center align-middle"><img src="../static/assets/ImagePath/{{produk['gambar']}}" alt="" width="50" /></td>
 
                   <td class="text-center align-middle">
                     <a href="/edit/{{produk['_id']}}"> <img src="https://img.icons8.com/plumpy/26/000000/edit-calendar.png" /></a>

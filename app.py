@@ -7,10 +7,21 @@ import hashlib
 from functools import wraps
 from babel.numbers import format_currency
 import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+MONGODB_URI = os.environ.get("MONGODB_URI")
+DB_NAME =  os.environ.get("DB_NAME")
+
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
 
-client = MongoClient('mongodb+srv://resellerida:idariseller@cluster0.yckjm3g.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-db = client.dbreseller
+# client = MongoClient('mongodb+srv://resellerida:idariseller@cluster0.yckjm3g.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+# db = client.dbreseller
 
 SECRET_KEY = 'IDA'
 TOKEN_KEY = 'ida'
@@ -112,7 +123,7 @@ def home():
             review=list(db.reviews.find({}))
             for item in data:
                 if 'harga' in item:
-                    item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
+                    item['harga']=format_currency(int(item['harga']), "IDR", locale='id_ID')
             return render_template('index.html', user_info=user_info,data=data,review=review)
         else:
             return redirect(url_for('login', msg="Role not recognized"))
@@ -209,7 +220,7 @@ def produk():
     data=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
-            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
+            item['harga']=format_currency(int(item['harga']), "IDR", locale='id_ID')
         
     return render_template('admin/produk.html', data=data)
 
@@ -417,7 +428,7 @@ def shop():
     data=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
-            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
+            item['harga']=format_currency(int(item['harga']), "IDR", locale='id_ID')
     return render_template('shop.html',data=data)
 
 @app.route('/detail/<_id>', methods=['GET'])
@@ -429,10 +440,10 @@ def detail(_id):
     data2=list(db.produk.find({}))
     for item in data:
         if 'harga' in item:
-            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
+            item['harga']=format_currency(int(item['harga']), "IDR", locale='id_ID')
     for item in data2:
         if 'harga' in item:
-            item['harga']=format_currency(item['harga'], "IDR", locale='id_ID')
+            item['harga']=format_currency(int(item['harga']), "IDR", locale='id_ID')
     return render_template('detail.html', produk=data[0],data2=data2,review=review,msg=msg)
 
 
@@ -470,7 +481,7 @@ def checkout(_id):
             total_harga = int(harga) * int(kuantitas)
             
             # Konversi mata uang
-            hargaAsli=format_currency(harga, "IDR", locale='id_ID')
+            hargaAsli=format_currency(int(harga), "IDR", locale='id_ID')
             total=format_currency(total_harga, "IDR", locale='id_ID')
 
             # Simpan pesanan ke database
