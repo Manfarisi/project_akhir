@@ -6,22 +6,22 @@ from datetime import datetime, timedelta
 import hashlib
 from functools import wraps
 from babel.numbers import format_currency
-import os
-from os.path import join, dirname
-from dotenv import load_dotenv
+# import os
+# from os.path import join, dirname
+# from dotenv import load_dotenv
 
-dotenv_path = join(dirname(__file__), '.env')
-load_dotenv(dotenv_path)
+# dotenv_path = join(dirname(__file__), '.env')
+# load_dotenv(dotenv_path)
 
-MONGODB_URI = os.environ.get("MONGODB_URI")
-DB_NAME =  os.environ.get("DB_NAME")
+# MONGODB_URI = os.environ.get("MONGODB_URI")
+# DB_NAME =  os.environ.get("DB_NAME")
 
-client = MongoClient(MONGODB_URI)
-db = client[DB_NAME]
+# client = MongoClient(MONGODB_URI)
+# db = client[DB_NAME]
 
 
-# client = MongoClient('mongodb+srv://resellerida:idariseller@cluster0.yckjm3g.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-# db = client.dbreseller
+client = MongoClient('mongodb+srv://resellerida:idariseller@cluster0.yckjm3g.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+db = client.dbreseller
 
 SECRET_KEY = 'IDA'
 TOKEN_KEY = 'ida'
@@ -77,26 +77,26 @@ def calculate_total_order_amount():
     print(f"Total amount calculated: {total_amount}")  # Tambahkan log ini untuk melihat total akhir
     return total_amount
 
-@app.route('/admin')
-@role_required('admin')
-def admin_page():
-    total_amount = calculate_total_order_amount()
-    formatted_total_amount = format_currency(total_amount, "IDR", locale='id_ID')
-    stats = {
-        'total_products': db.produk.count_documents({}),
-        'total_orders': db.users.count_documents({}),
-        'orders_in_process': db.orderan.count_documents({'status': 'Diproses'}),
-        'orders_shipped': db.orderan.count_documents({'status': 'Dikirim'}),
-        'orders_accepted': db.orderan.count_documents({'status': 'Diterima'}),
-        'total_order_amount': formatted_total_amount
-    }
+# @app.route('/admin')
+# @role_required('admin')
+# def admin_page():
+#     total_amount = calculate_total_order_amount()
+#     formatted_total_amount = format_currency(total_amount, "IDR", locale='id_ID')
+#     stats = {
+#         'total_products': db.produk.count_documents({}),
+#         'total_orders': db.users.count_documents({}),
+#         'orders_in_process': db.orderan.count_documents({'status': 'Diproses'}),
+#         'orders_shipped': db.orderan.count_documents({'status': 'Dikirim'}),
+#         'orders_accepted': db.orderan.count_documents({'status': 'Diterima'}),
+#         'total_order_amount': formatted_total_amount
+#     }
 
-    return render_template('admin/dashboard.html', stats=stats)
+#     return render_template('admin/dashboard.html', stats=stats)
 
-@app.route('/user')
-@role_required('user')
-def user_page():
-    return render_template('index.html')
+# @app.route('/user')
+# @role_required('user')
+# def user_page():
+#     return render_template('index.html')
 
 @app.route('/', methods=['GET'])
 def home():
@@ -216,6 +216,7 @@ def login():
 # ADMIN PAGE
 
 @app.route('/produk', methods=['GET','POST'])
+@role_required('admin')
 def produk():
     data=list(db.produk.find({}))
     for item in data:
@@ -227,6 +228,7 @@ def produk():
 
  
 @app.route('/add', methods=['GET','POST'])
+@role_required('admin')
 def addproduk():
     if request.method == 'POST':
         nama= request.form['nama']
@@ -260,6 +262,7 @@ def addproduk():
     return render_template('admin/addProduk.html')
 
 @app.route('/edit/<_id>', methods=['GET','POST'])
+@role_required('admin')
 def editproduk(_id):
     if request.method == 'POST':
         id = request.form['_id']
@@ -300,17 +303,20 @@ def deleteproduk(_id):
     return redirect(url_for('produk',message="Data Berhasil Dihapus"))
 
 @app.route('/pembayaran', methods=['GET','POST'])
+@role_required('admin')
 def pembayaran():
     orderan=list(db.orderan.find({}))
 
     return render_template('admin/pembayaran.html',orderan=orderan)
 
 @app.route('/testimoni', methods=['GET','POST'])
+@role_required('admin')
 def testimoni():
     testimoni=list(db.reviews.find({}))
     return render_template('admin/testimoni.html',testimoni=testimoni)
 
 @app.route('/searchTesti', methods=['POST'])
+@role_required('admin')
 def searchTesti():
     query = request.form.get('query')
     if query:
@@ -327,6 +333,7 @@ def deleteTesti(_id):
     return redirect(url_for('testimoni',message="Data Berhasil Dihapus"))
 
 @app.route('/status', methods=['GET','POST'])
+@role_required('admin')
 def status():
     orderan=list(db.orderan.find({}))
 
@@ -334,17 +341,20 @@ def status():
 
 
 @app.route('/update_status/<_id>', methods=['POST'])
+@role_required('admin')
 def update_status(_id):
     new_status = request.form.get('status')
     db.orderan.update_one({'_id': ObjectId(_id)}, {'$set': {'status': new_status}})
     return jsonify({'result': 'success'})
 
 @app.route('/delete_order/<_id>', methods=['GET','POST'])
+@role_required('admin')
 def deletepesanan(_id):
     db.orderan.delete_one({'_id':ObjectId(_id)})
     return jsonify({'result': 'success'})
 
 @app.route('/lihat_bukti/<_id>', methods=['GET'])
+@role_required('admin')
 def lihat_bukti(_id):
     order = db.orderan.find_one({'_id': ObjectId(_id)})
 
@@ -358,6 +368,7 @@ def lihat_bukti(_id):
     return "Order not found", 404
 
 @app.route('/search', methods=['POST'])
+@role_required('admin')
 def search():
     query = request.form.get('query')
     if query:
@@ -369,6 +380,7 @@ def search():
     return render_template('admin/pembayaran.html', orderan=results,query=query)
 
 @app.route('/searchProduk', methods=['POST'])
+@role_required('admin')
 def searchproduk():
     query = request.form.get('query')
     if query:
@@ -386,6 +398,7 @@ def searchproduk():
 # USER PAGE
 
 @app.route('/submit_review/<_id>', methods=['POST'])
+@role_required('user')
 def submit_review(_id):
     id=ObjectId(_id)
     
@@ -413,6 +426,7 @@ def submit_review(_id):
         return redirect(url_for("home"))
 
 @app.route('/searchShop', methods=['POST'])
+@role_required('user')
 def searchshop():
     query = request.form.get('query')
     if query:
@@ -424,6 +438,7 @@ def searchshop():
     return render_template('shop.html', data=results,query=query)
 
 @app.route('/shop', methods=['GET'])
+@role_required('user')
 def shop():
     data=list(db.produk.find({}))
     for item in data:
@@ -432,6 +447,7 @@ def shop():
     return render_template('shop.html',data=data)
 
 @app.route('/detail/<_id>', methods=['GET'])
+@role_required('user')
 def detail(_id):
     id=ObjectId(_id)
     msg = request.args.get('msg')
@@ -449,6 +465,7 @@ def detail(_id):
 
 
 @app.route('/contact', methods=['GET'])
+@role_required('user')
 def contact():
     msg = request.args.get('msg')
     return render_template('contact.html', msg=msg)
@@ -456,6 +473,7 @@ def contact():
 
 
 @app.route('/checkout/<_id>', methods=['GET','POST'])
+@role_required('user')
 def checkout(_id):
     id=ObjectId(_id)
 
@@ -499,6 +517,7 @@ def checkout(_id):
             return redirect(url_for('order', order_id=pesanan['_id']))
     
 @app.route('/order/<order_id>', methods=['GET'])
+@role_required('user')
 def order(order_id):
     id=ObjectId(order_id)
     data=db.pesanan.find_one({'_id':id})
@@ -506,6 +525,7 @@ def order(order_id):
     return render_template('checkout.html', pesanan=data)
 
 @app.route('/batal/<_id>', methods=['GET'])
+@role_required('user')
 def batal(_id):
     pesanan = db.pesanan.find_one({'_id':ObjectId(_id)})
     id=pesanan['idpdk']
@@ -514,6 +534,7 @@ def batal(_id):
 
 
 @app.route('/pesan/<_id>', methods=['POST'])
+@role_required('user')
 def pesanan(_id):
         token_receive = request.cookies.get("ida")
         id=ObjectId(_id)
@@ -577,6 +598,7 @@ def pesanan(_id):
 
 
 @app.route('/statusUser', methods=['GET'])
+@role_required('user')
 def statusUser():
     token_receive = request.cookies.get("ida")
     try:
